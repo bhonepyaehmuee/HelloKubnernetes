@@ -1,28 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: calculator-deployment
+  name: helloworld-deployment
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: calculator
+      app: helloworld
   template:
     metadata:
       labels:
-        app: calculator
-        label: label
+        app: helloworld
     spec:
       containers:
-        - name: calculator
-          image: bownoed/mycalculator:v2.0
+        - name: helloworld
+          image: bownoed/helloworld:v1.0
           ports:
             - containerPort: 8080
           # 👉 PUT env HERE (inside container)
           env:
             - name: SERVER_SERVLET_CONTEXT_PATH
-              value: "/calculator"
+              value: "/helloworld"
             - name: SPRINGDOC_API_DOCS_PATH
-              value: "/calculator/v3/api-docs"
+              value: "/helloworld/v3/api-docs"
             - name: SPRINGDOC_SWAGGER_UI_PATH
               value: "/swagger-ui.html"
