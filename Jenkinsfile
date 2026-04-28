@@ -30,8 +30,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                sh 'docker build -t bownoed/helloworld:v1.0 .
-'
+                sh 'docker build -t bownoed/helloworld:v1.0 .'
                 }
             }
         }
