@@ -11,7 +11,7 @@ pipeline {
     }
 
     stages {
-
+        // Stage 1: Checkout code from Git
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -19,13 +19,14 @@ pipeline {
             }
         }
 
+        // Stage 2: Build the JAR file
         stage('Build Jar') {
             steps {
-                // Jar build AFTER coverage
                 sh 'mvn clean package -DskipTests'
             }
         }
 
+        // Stage 3: Build the Docker Image
         stage('Build Docker Image') {
             steps {
                 script {
@@ -34,6 +35,7 @@ pipeline {
             }
         }
 
+        // Stage 4: Push Docker Image to Docker Hub
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
@@ -43,26 +45,16 @@ pipeline {
             }
         }
 
+        // Stage 5: Deploy to Kubernetes
         stage('Deploy to Kubernetes') {
             steps {
-                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]){
-                                          sh 'kubectl apply -f deployment.yaml'
-                                          sh 'kubectl apply -f service.yaml'
-                                        }
-                                    }
-                                }
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+                    sh 'kubectl apply -f deployment.yaml'
+                    sh 'kubectl apply -f service.yaml'
+                }
             }
         }
-//         stage('Deploy to Kubernetes') {
-//                     steps {
-//
-//                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]){
-//                           sh 'kubectl apply -f deployment.yaml'
-//                           sh 'kubectl apply -f service.yaml'
-//                         }
-//                     }
-//                 }
-//     }
+    }
 
     post {
         success {
