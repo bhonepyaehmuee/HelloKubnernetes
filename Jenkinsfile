@@ -19,7 +19,6 @@ pipeline {
             }
         }
 
-
         stage('Build Jar') {
             steps {
                 // Jar build AFTER coverage
@@ -30,40 +29,45 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                sh 'docker build -t bownoed/helloworld:v1.0 .'
+                    sh 'docker build -t bownoed/helloworld:v1.0 .'
                 }
             }
         }
+
         stage('Push to Docker Hub') {
-                    steps {
-                       sh 'docker login -u $USER -p $PASS'
-                       sh 'docker push bph/helloworld:v1.0'
-                    }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
+                }
+                sh 'docker push bownoed/helloworld:v1.0'
+            }
         }
-         stage('Deploy to Kubernetes') {
-                   steps {
-                        sh '''
-                        kubectl apply -f deployment.yaml
-                        kubectl apply -f service.yaml
-                        '''
-                    }
-         }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                kubectl apply -f deployment.yaml
+                kubectl apply -f service.yaml
+                '''
+            }
+        }
+    }
 
     post {
         success {
             echo "✅ Pipeline succeeded! App running at http://localhost:${DOCKER_HOST_PORT}/"
             emailext(
                 to: 'bhshi75@gmail.com',
-                subject: 'Pipeline Email Test',
-                body: 'Pipeline Success email sent successfully ✅'
+                subject: "Pipeline Success",
+                body: "Pipeline succeeded. Your app is running at http://localhost:${DOCKER_HOST_PORT}/"
             )
         }
         failure {
             echo "❌ Pipeline failed."
             emailext(
                 to: 'bhshi75@gmail.com',
-                subject: 'Pipeline Email Test',
-                body: 'Pipeline Fail email sent successfully ✅'
+                subject: "Pipeline Failure",
+                body: "Pipeline failed. Please check the logs."
             )
         }
         always {
