@@ -51,19 +51,19 @@ pipeline {
         }
 
         // Stage 5: Deploy to Kubernetes
-        stage('Deploy to Kubernetes') {
-            steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh 'kubectl apply -f deployment.yaml --validate=false'
-                    sh 'kubectl apply -f service.yaml'
-                }
-            }
-        }
-//         stage('Deploy with Ansible') {
-//                     steps {
-//                         sh 'ansible-playbook ansible/playbook.yaml -i ansible/inventory'
-//                     }
+//         stage('Deploy to Kubernetes') {
+//             steps {
+//                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
+//                     sh 'kubectl apply -f deployment.yaml --validate=false'
+//                     sh 'kubectl apply -f service.yaml'
 //                 }
+//             }
+//         }
+        stage('Deploy with Ansible') {
+                    steps {
+                        sh 'ansible-playbook ansible/playbook.yaml -i ansible/inventory'
+                    }
+                }
     }
 
     post {
