@@ -39,10 +39,14 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                 script {
-                                         sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                                         sh "docker push ${DOCKER_REPO}:v1.0"
-                                     }
+                script {
+                                        sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                                        sh "docker push ${DOCKER_REPO}:v1.0"
+                                    }
+                 }
+//                     sh "docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}"
+//                 }
+//                 sh 'docker push bownoed/helloworld:v1.0'
             }
         }
 
