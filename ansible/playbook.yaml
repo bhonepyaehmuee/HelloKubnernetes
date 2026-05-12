@@ -6,3 +6,4 @@
       shell: |
         export KUBECONFIG={{ lookup('env','KUBECONFIG') }}
         kubectl apply -f ../deployment.yaml --validate=false
+        kubectl apply -f ../service.yaml --validate=false
