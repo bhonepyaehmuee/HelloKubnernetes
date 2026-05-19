@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: helloworld
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+        - name: helloworld
+          image: bownoed/helloworld:v1.0
+          ports:
+            - containerPort: 8080
+          # 👉 PUT env HERE (inside container)
+          env:
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: "/helloworld"
+            - name: SPRINGDOC_API_DOCS_PATH
+              value: "/helloworld/v3/api-docs"
+            - name: SPRINGDOC_SWAGGER_UI_PATH
+              value: "/swagger-ui.html"
