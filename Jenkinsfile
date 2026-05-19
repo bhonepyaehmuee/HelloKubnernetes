@@ -72,21 +72,21 @@ pipeline {
 //                 }
 
 stage('Deploy to DEV') {
-            steps {
-                withCredentials([
-                    file(
-                        credentialsId: 'kubeconfig-dev',
-                        variable: 'KUBECONFIG'
-                    )
-                ]) {
-                    sh '''
-                    kubectl config current-context
-                kubectl apply -f deployment-dev.yaml --validate=false
-                     kubectl apply -f service.yaml --validate=false
-                    '''
-                }
-            }
+    steps {
+        withCredentials([
+            file(
+                credentialsId: 'kubeconfig-dev',
+                variable: 'KUBECONFIG'
+            )
+        ]) {
+            sh '''
+            kubectl config current-context
+            kubectl apply -f deployment-dev.yaml --validate=false --insecure-skip-tls-verify=true
+            kubectl apply -f service.yaml --validate=false --insecure-skip-tls-verify=true
+            '''
         }
+    }
+}
 
         stage('Approval') {
             steps {
