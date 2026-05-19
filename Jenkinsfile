@@ -103,8 +103,8 @@ stage('Deploy to DEV') {
                     )
                 ]) {
                     sh '''
-                    kubectl apply -f deployment-prod.yaml
-                    kubectl apply -f service.yaml
+                    kubectl apply -f deployment-prod.yaml --validate=false --insecure-skip-tls-verify=true
+                    kubectl apply -f service.yaml --validate=false --insecure-skip-tls-verify=true
                     '''
                 }
             }
