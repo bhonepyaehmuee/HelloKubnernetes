@@ -81,7 +81,7 @@ stage('Deploy to DEV') {
         ]) {
             sh '''
             kubectl config current-context
-            kubectl apply -f deployment-dev.yaml --validate=false --insecure-skip-tls-verify=true
+            kubectl apply -f deployment-dev.yaml  --server=https://host.docker.internal:63514 --validate=false --insecure-skip-tls-verify=true
             kubectl apply -f service.yaml --validate=false --insecure-skip-tls-verify=true
             '''
         }
@@ -103,7 +103,7 @@ stage('Deploy to DEV') {
                     )
                 ]) {
                     sh '''
-                    kubectl apply -f deployment-prod.yaml --validate=false --insecure-skip-tls-verify=true
+                    kubectl apply -f deployment-prod.yaml --server=https://host.docker.internal:64298 --validate=false --insecure-skip-tls-verify=true
                     kubectl apply -f service.yaml --validate=false --insecure-skip-tls-verify=true
                     '''
                 }
